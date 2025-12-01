@@ -1,6 +1,6 @@
 {
   "name": "iqueue",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "backEnd of the iQueue webApp",
   "homepage": "https://github.com/LawntuYes/iQueue#readme",
   "bugs": {
@@ -12,9 +12,11 @@
   },
   "license": "MIT",
   "author": "Michael Goldin",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "start": "node --env-file=.env --watch index.js"
+  },
   "dependencies": {
     "express": "^5.1.0",
     "mongoose": "^9.0.0"
