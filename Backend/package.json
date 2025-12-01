@@ -15,6 +15,5 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "console.log(\"Hello\")"
   }
 }
