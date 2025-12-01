@@ -1,0 +1,20 @@
+{
+  "name": "iqueue",
+  "version": "1.0.0",
+  "description": "backEnd of the iQueue webApp",
+  "homepage": "https://github.com/LawntuYes/iQueue#readme",
+  "bugs": {
+    "url": "https://github.com/LawntuYes/iQueue/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LawntuYes/iQueue.git"
+  },
+  "license": "MIT",
+  "author": "Michael Goldin",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "console.log(\"Hello\")"
+  }
+}
