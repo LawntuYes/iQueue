@@ -1,12 +1,10 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-export function connectDB() {
-    mongoose.connect(process.env.DATABASE_URL);
-    const database = mongoose.connection;
-    database.on('error', (error) => {
-        console.log("Database Connection Error:", error);
-    });
-    database.once('connected', () => {
-        console.log('Database Connected');
-    });
+export async function connectDB() {
+  try {
+    await mongoose.connect(process.env.DATABASE_URL);
+    console.log("Database Connected");
+  } catch (error) {
+    console.log("Database Connection Error:", error);
+  }
 }
