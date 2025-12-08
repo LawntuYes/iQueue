@@ -7,10 +7,13 @@ import { connectDB } from "./src/lib/connect.js";
 import allRoutes from "./src/routes/index.js";
 // You no longer need to import the User model here
 
+import cookieParser from "cookie-parser";
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors({ origin: "http://localhost:5175", credentials: true }));
+app.use(cors({ origin: "http://localhost:5173", credentials: true })); // Updated to 5173 for standard Vite
+app.use(cookieParser());
 app.use(express.json());
 // Use the aggregated routes under the /api path
 app.use("/api", allRoutes);
