@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { useAuth } from '../../hooks/useAuth';
+
 const Login = () => {
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -20,17 +23,36 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Basic validation
+    if (!formData.email || !formData.password) {
+      setError('Please fill in all fields');
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setError('Password must be at least 8 characters');
+      return;
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
     setIsLoading(true);
     setError('');
 
     try {
-      console.log('Login attempt:', formData);
+      console.log('Login attempt:', formData.email);
       
-      // הדמיית התחברות מוצלחת
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await login(formData.email, formData.password);
       navigate('/');
       
     } catch (err) {
+      console.error("Login failed:", err);
       setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
       setIsLoading(false);
