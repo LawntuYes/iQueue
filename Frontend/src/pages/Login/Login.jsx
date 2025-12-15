@@ -24,14 +24,10 @@ const Login = () => {
     setError('');
 
     try {
-      // כאן יהיה הקוד להתחברות ל-MongoDB
       console.log('Login attempt:', formData);
       
       // הדמיית התחברות מוצלחת
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // אחרי התחברות מוצלחת - נווט לדף המתאים
-      // במקרה שלך - DashboardUser או דף הבית
       navigate('/');
       
     } catch (err) {

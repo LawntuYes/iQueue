@@ -1,7 +1,7 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* src/components/Navbar.css */
@@ -17,11 +17,13 @@
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   --radius: 8px;
-  --footer-bg: #b7b7b7;
+  --footer-bg: #eaeaea;
 }
 
 /* תמיכה ב-full height */
-html, body, #root {
+html,
+body,
+#root {
   min-height: 100vh;
 }
 
@@ -44,6 +46,7 @@ body {
   top: 0;
   z-index: 1000;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--background-light);
 }
 
 .navbar-container {
@@ -294,7 +297,7 @@ body {
   color: white;
 }
 
-.logout-test:hover{
+.logout-test:hover {
   border: var(--logout-color);
 }
 
@@ -311,7 +314,8 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: var(--text-light);
   font-size: 0.9rem;
-  margin-top: auto; /* זה מה שדוחף את הפוטר למטה */
+  margin-top: auto;
+  /* זה מה שדוחף את הפוטר למטה */
 }
 
 /* Responsive Design */
@@ -394,6 +398,7 @@ body {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
