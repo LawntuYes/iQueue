@@ -3,7 +3,7 @@
 // import viteLogo from '/vite.svg'
 import './assets/styles/global.css'
 import AppRouter from './router/AppRouter'
-import { AuthProvider } from './context/AuthContext'
+import { AuthProvider } from './context/AuthProvider'
 
 function App() {
   return (
