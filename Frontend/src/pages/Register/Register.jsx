@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 
 
 const Register = () => {
+  const { register } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -30,8 +32,12 @@ const Register = () => {
       return;
     }
     
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
+    // Backend validation regex:
+    // min 8 chars, 1 number, 1 uppercase, 1 special char
+    const passwordRegex = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
+
+    if (!passwordRegex.test(formData.password)) {
+      setError('Password must be at least 8 characters long and contain at least one number, one uppercase letter, and one special character (!@#$%^&*)');
       return;
     }
 
@@ -39,14 +45,10 @@ const Register = () => {
     setError('');
 
     try {
-      // כאן יהיה הקוד לרישום ב-MongoDB
-      console.log('Registration attempt:', formData);
+      await register(formData.name, formData.email, formData.password, formData.userType);
       
-      // הדמיית רישום מוצלח
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // אחרי רישום מוצלח - נווט לדף הבית או התחברות
-      navigate('/login');
+      // Navigate to dashboard or home after successful registration
+      navigate('/');
       
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');

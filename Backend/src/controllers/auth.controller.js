@@ -24,7 +24,10 @@ const validate = (schema, data) => {
 
 export const register = async (req, res) => {
   try {
-    const { name, email, password } = validate(RegisterSchema, req.body); //Zod validation
+    const { name, email, password, userType } = validate(
+      RegisterSchema,
+      req.body
+    ); //Zod validation
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res
@@ -32,7 +35,7 @@ export const register = async (req, res) => {
         .json({ success: false, message: "Email already in use" });
     }
     const passwordHash = await bcrypt.hash(password, SALT_ROUNDS); // Hash the password
-    const newUser = new User({ name, email, passwordHash });
+    const newUser = new User({ name, email, passwordHash, userType });
     await newUser.save();
     const token = jwt.sign(
       { userId: newUser._id },
@@ -59,7 +62,12 @@ export const register = async (req, res) => {
     console.error("Registration Error:", error);
     return res
       .status(500)
-      .json({ success: false, message: "Internal Server Error" });
+      .json({
+        success: false,
+        message: "Internal Server Error",
+        error: error.message,
+        stack: error.stack,
+      });
   }
 };
 
