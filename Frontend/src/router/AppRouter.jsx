@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 // Layouts
 import MainLayout from "../layouts/MainLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
+import AuthLayout from "../layouts/AuthLayout";
 
 // Pages
 import Home from "../pages/Home/Home";
@@ -18,26 +19,30 @@ import PrivateRoute from "./PrivateRoute";
 
 export default function AppRouter() {
     return (
-        // <BrowserRouter>
-            <Routes>
+        <Routes>
+            <Route element={<MainLayout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/business/:id" element={<BusinessPage />} />
+            </Route>
 
-                <Route element={<MainLayout />}>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/business/:id" element={<BusinessPage />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
+            <Route element={<AuthLayout />}>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+            </Route>
+
+            <Route element={<PrivateRoute />}>
+                <Route element={<DashboardLayout />}>
+                    <Route path="/dashboard/admin" element={<DashboardAdmin />} />
+                    <Route path="/dashboard/business" element={<DashboardBusiness />} />
+                    <Route path="/dashboard/user" element={<DashboardUser />} />
                 </Route>
+            </Route>
 
-                <Route element={<PrivateRoute />}>
-                    <Route element={<DashboardLayout />}>
-                        <Route path="/dashboard/admin" element={<DashboardAdmin />} />
-                        <Route path="/dashboard/business" element={<DashboardBusiness />} />
-                        <Route path="/dashboard/user" element={<DashboardUser />} />
-                    </Route>
-                </Route>
-
-                <Route path="*" element={<NotFound />} />
-            </Routes>
-        // </BrowserRouter>
+            <Route path="*" element={
+                <MainLayout>
+                    <NotFound />
+                </MainLayout>
+            } />
+        </Routes>
     );
 }

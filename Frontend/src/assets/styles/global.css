@@ -294,6 +294,12 @@ body {
   color: white;
 }
 
+.logout-test:hover{
+  border: var(--logout-color);
+}
+
+
+
 /* =================== */
 /* FOOTER FIX - השינויים העיקריים כאן */
 /* =================== */
