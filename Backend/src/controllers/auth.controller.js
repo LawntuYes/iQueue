@@ -1,7 +1,7 @@
 import { z } from "zod";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { User } from "../models/user.model.js";
+import { User } from "../models/User.model.js";
 import { LoginSchema, RegisterSchema } from "../validations/auth.schema.js";
 
 const SALT_ROUNDS = 12; //SALT_ROUNDS is for hashing passwords securely needs to be bigger than 9
