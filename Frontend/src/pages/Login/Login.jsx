@@ -49,8 +49,8 @@ const Login = () => {
       console.log('Login attempt:', formData.email);
       
       await login(formData.email, formData.password);
+      // Navigate to home but user (with role) is stored in AuthProvider/localStorage
       navigate('/');
-      
     } catch (err) {
       console.error("Login failed:", err);
       setError(err.message || 'Login failed. Please check your credentials.');

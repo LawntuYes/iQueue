@@ -1,16 +1,14 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
-  const [user, setUser] = useState(null);
-  const [role, setRole] = useState(null);
-  
   const handleLogout = () => {
-    setUser(null);
-    setRole(null);
+    logout();
     navigate('/');
     setIsMenuOpen(false);
   };
@@ -18,6 +16,8 @@ const Navbar = () => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const role = user?.role;
 
   return (
     <nav className="navbar">
@@ -65,7 +65,7 @@ const Navbar = () => {
             {user ? (
               <>
                 <div className="user-info">
-                  <span className="user-greeting">Hi, {user.name?.split(' ')[0] || 'User'}</span>
+                  <span className="user-greeting">Hi, {user.name}</span>
                   <span className="user-role">{role}</span>
                 </div>
                 <button className="btn-logout" onClick={handleLogout}>
@@ -91,22 +91,6 @@ const Navbar = () => {
             <span className="bar"></span>
             <span className="bar"></span>
           </div>
-        </button>
-      </div>
-
-      <div className="role-selector">
-        <small>Test roles:</small>
-        <button onClick={() => { setUser({ name: 'Test User', email: 'user@test.com' }); setRole('user'); }}>
-          User
-        </button>
-        <button onClick={() => { setUser({ name: 'Business Owner', email: 'business@test.com' }); setRole('business'); }}>
-          Business
-        </button>
-        <button onClick={() => { setUser({ name: 'Admin', email: 'admin@test.com' }); setRole('admin'); }}>
-          Admin
-        </button>
-        <button onClick={handleLogout} className="logout-test">
-          Logout
         </button>
       </div>
     </nav>

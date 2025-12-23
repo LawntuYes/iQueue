@@ -2,8 +2,18 @@ import { useState } from "react";
 import { login as loginService, register as registerService, logout as logoutService } from "../services/auth";
 import AuthContext from "./AuthContext";
 
+const STORAGE_KEY = "iq_user";
+
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  // Initialize user from localStorage so role is remembered across refreshes
+  const [user, setUser] = useState(() => {
+    try {
+      const raw = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
+      return raw ? JSON.parse(raw) : null;
+    } catch (err) {
+      return null;
+    }
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -13,7 +23,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await loginService(email, password);
       // Assuming backend returns { user: ... }
-      setUser(data.user); 
+      setUser(data.user);
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user)); } catch (e) {}
       return data;
     } catch (err) {
       setError(err.message || "Login failed");
@@ -29,6 +40,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await registerService(name, email, password, userType);
       setUser(data.user);
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user)); } catch (e) {}
       return data;
     } catch (err) {
       setError(err.message || "Registration failed");
@@ -42,6 +54,7 @@ export const AuthProvider = ({ children }) => {
     try {
         await logoutService();
         setUser(null);
+        try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
     } catch (err) {
         console.error("Logout failed", err);
     }
