@@ -2,11 +2,12 @@ import { Appointment } from "../models/Appointment.model.js";
 
 export const createAppointment = async (req, res) => {
   try {
-    const { date, time } = req.body;
+    const { date, time, businessId } = req.body;
     const userId = req.userId; // Provided by auth middleware
 
     const newAppointment = new Appointment({
       user: userId,
+      business: businessId, // Optional for now, but good to support
       date,
       time,
     });

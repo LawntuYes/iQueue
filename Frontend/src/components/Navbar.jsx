@@ -39,7 +39,7 @@ const Navbar = () => {
             
             {role === 'admin' && (
               <>
-                <Link to="/admin/dashboard" className="nav-item" onClick={() => setIsMenuOpen(false)}>
+                <Link to="/dashboard/admin" className="nav-item" onClick={() => setIsMenuOpen(false)}>
                   Admin Panel
                 </Link>
                 <Link to="/admin/businesses" className="nav-item" onClick={() => setIsMenuOpen(false)}>
@@ -49,7 +49,7 @@ const Navbar = () => {
             )}
 
             {role === 'business' && (
-              <Link to="/business/dashboard" className="nav-item" onClick={() => setIsMenuOpen(false)}>
+              <Link to="/dashboard/business" className="nav-item" onClick={() => setIsMenuOpen(false)}>
                 Business Dashboard
               </Link>
             )}
