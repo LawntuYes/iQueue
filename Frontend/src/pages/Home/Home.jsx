@@ -7,7 +7,6 @@ export default function Home() {
 
   return (
     <div className="home-container">
-      {/* Decorative Background Shapes */}
       <div className="shape shape-1"></div>
       <div className="shape shape-2"></div>
       <div className="shape shape-3"></div>
@@ -31,12 +30,11 @@ export default function Home() {
               Get Started
             </Link>
             <Link to="/login" className="btn-modern btn-outline">
-              Sign In
+              Login
             </Link>
           </div>
         )}
         
-        {/* Logged in users just see the beautiful modern home page without the dashboard button as requested */}
         {user && (
           <div className="hero-buttons">
              <span style={{ color: '#6b7280', fontSize: '1.1rem', fontWeight: 500 }}>
