@@ -5,7 +5,6 @@ import AuthContext from "./AuthContext";
 const STORAGE_KEY = "iq_user";
 
 export const AuthProvider = ({ children }) => {
-  // Initialize user from localStorage so role is remembered across refreshes
   const [user, setUser] = useState(() => {
     try {
       const raw = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
