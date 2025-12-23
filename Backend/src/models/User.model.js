@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema(
 userSchema.methods.toJSON = function () {
   const userObject = this.toObject();
   delete userObject.passwordHash; // Exclude passwordHash from the returned object
+  // Map userType to role for consistency with frontend
+  if (userObject.userType) {
+    userObject.role = userObject.userType;
+  }
   return userObject;
 };
 export const User = mongoose.model("User", userSchema);

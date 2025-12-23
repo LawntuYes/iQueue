@@ -46,10 +46,8 @@ const Register = () => {
 
     try {
       await register(formData.name, formData.email, formData.password, formData.userType);
-      
-      // Navigate to dashboard or home after successful registration
+      // After register, navigate to home. AuthProvider persists the user and role.
       navigate('/');
-      
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {

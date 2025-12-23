@@ -103,8 +103,12 @@ export const login = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    // 3. Success: Return 200 OK. (The user.model.js toJSON hides the hash)
-    return res.status(200).json({ user, message: "Login successful." });
+    // 3. Success: Return 200 OK. (The user.model.js toJSON hides the hash and adds role)
+    return res.status(200).json({ 
+      success: true,
+      user, 
+      message: "Login successful." 
+    });
   } catch (error) {
     if (error.status === 400) {
       return res.status(400).json(error);
