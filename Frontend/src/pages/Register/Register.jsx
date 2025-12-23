@@ -34,10 +34,10 @@ const Register = () => {
     
     // Backend validation regex:
     // min 8 chars, 1 number, 1 uppercase, 1 special char
-    const passwordRegex = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
+    const passwordRegex = /^(?=.*[0-9])(?=.*[A-Z])[a-zA-Z0-9]{8,}$/;
 
     if (!passwordRegex.test(formData.password)) {
-      setError('Password must be at least 8 characters long and contain at least one number, one uppercase letter, and one special character (!@#$%^&*)');
+      setError('Password must be at least 8 characters long and contain at least one number, one uppercase letter.');
       return;
     }
 
@@ -153,7 +153,7 @@ const Register = () => {
               value={formData.password}
               onChange={handleChange}
               className="form-input"
-              placeholder="At least 6 characters"
+              placeholder="At least 8 characters"
               required
               disabled={isLoading}
             />
