@@ -302,9 +302,6 @@ body {
   border: var(--logout-color);
 }
 
-/* =================== */
-/* FOOTER FIX - השינויים העיקריים כאן */
-/* =================== */
 .footer-container {
   background: var(--footer-bg);
   box-shadow: var(--shadow-md);
@@ -315,8 +312,8 @@ body {
   color: var(--text-light);
   font-size: 0.9rem;
   margin-top: auto;
-  /* זה מה שדוחף את הפוטר למטה */
 }
+
 
 /* Responsive Design */
 @media (max-width: 768px) {
