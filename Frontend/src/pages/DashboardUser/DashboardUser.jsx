@@ -156,8 +156,18 @@ export default function DashboardUser() {
                    {appointments.map((appt) => (
                      <div key={appt._id} className="appointment-card">
                        <div className="appointment-date">
-                         {/* TODO: If we populated business name in GET appointments, show it here. For now, showing Date/Time is primary */}
-                         Date: {new Date(appt.date).toLocaleDateString()}
+                         {appt.business?.name ? (
+                           <div style={{ fontSize: "1.1rem", color: "#4f46e5", fontWeight: "700", marginBottom: "0.25rem" }}>
+                             {appt.business.name}
+                           </div>
+                         ) : (
+                           <div style={{ fontSize: "0.9rem", color: "#9ca3af", fontStyle: "italic", marginBottom: "0.25rem" }}>
+                             Unknown Business
+                           </div>
+                         )}
+                         <div style={{ color: "#4b5563", fontSize: "0.9rem" }}>
+                           {new Date(appt.date).toLocaleDateString()}
+                         </div>
                        </div>
                        <div className="appointment-details">
                          <span className="appointment-time">
