@@ -14,3 +14,7 @@ export const getMyBusiness = async () => {
 export const getBusinessAppointments = async () => {
   return request("/business/appointments");
 };
+
+export const getAllBusinesses = async () => {
+  return request("/business");
+};

@@ -1,9 +1,16 @@
 import request from "./api";
 
-export const createAppointment = async (date, time) => {
+export const createAppointment = async (dateOrObj, time) => {
+  let body;
+  if (typeof dateOrObj === "object") {
+    body = dateOrObj;
+  } else {
+    body = { date: dateOrObj, time };
+  }
+
   return request("/appointments", {
     method: "POST",
-    body: JSON.stringify({ date, time }),
+    body: JSON.stringify(body),
   });
 };
 

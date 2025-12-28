@@ -83,3 +83,18 @@ export const getBusinessAppointments = async (req, res) => {
       .json({ success: false, message: "Error fetching appointments" });
   }
 };
+
+export const getAllBusinesses = async (req, res) => {
+  try {
+    const businesses = await Business.find(
+      {},
+      "name description category operatingHours owner"
+    );
+    res.status(200).json({ success: true, businesses });
+  } catch (error) {
+    console.error("Get All Businesses Error:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error fetching businesses" });
+  }
+};
