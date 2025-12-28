@@ -10,7 +10,7 @@ const Register = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    userType: 'user', // user, business, admin
+    userType: 'user', // user, business, admin 
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -46,8 +46,7 @@ const Register = () => {
 
     try {
       await register(formData.name, formData.email, formData.password, formData.userType);
-      // After register, navigate to home. AuthProvider persists the user and role.
-      navigate('/');
+      navigate('/Login');
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {
@@ -58,7 +57,6 @@ const Register = () => {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        {/* כותרת */}
         <div className="auth-header">
           <div className="auth-logo">
             <span className="logo-primary">i</span>
@@ -68,9 +66,7 @@ const Register = () => {
           <p className="auth-subtitle">Join iQueue to manage your appointments</p>
         </div>
 
-        {/* טופס */}
         <form className="auth-form" onSubmit={handleSubmit}>
-          {/* הודעת שגיאה */}
           {error && (
             <div className="auth-error">
               <span className="error-icon">⚠</span>
@@ -78,7 +74,6 @@ const Register = () => {
             </div>
           )}
 
-          {/* שדה שם */}
           <div className="form-group">
             <label htmlFor="name" className="form-label">
               Full Name
@@ -96,7 +91,6 @@ const Register = () => {
             />
           </div>
 
-          {/* שדה אימייל */}
           <div className="form-group">
             <label htmlFor="email" className="form-label">
               Email Address
@@ -114,7 +108,6 @@ const Register = () => {
             />
           </div>
 
-          {/* בחירת סוג משתמש */}
           <div className="form-group">
             <label className="form-label">
               I want to join as:
@@ -139,7 +132,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* שדה סיסמה */}
           <div className="form-group">
             <label htmlFor="password" className="form-label">
               Password
@@ -157,7 +149,6 @@ const Register = () => {
             />
           </div>
 
-          {/* שדה אימות סיסמה */}
           <div className="form-group">
             <label htmlFor="confirmPassword" className="form-label">
               Confirm Password
@@ -175,7 +166,6 @@ const Register = () => {
             />
           </div>
 
-          {/* כפתור הרשמה */}
           <button
             type="submit"
             className="auth-btn"
@@ -191,7 +181,6 @@ const Register = () => {
             )}
           </button>
 
-          {/* קישור להתחברות */}
           <div className="auth-footer">
             <p className="auth-text">
               Already have an account?{' '}
