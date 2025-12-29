@@ -15,6 +15,42 @@ export default function DashboardUser() {
   const [showModal, setShowModal] = useState(false);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+
+  // check if the time is synching with the business open hours
+  const [isTimeValid, setIsTimeValid] = useState(false);
+  const [timeMin, setTimeMin] = useState("");
+  const [timeMax, setTimeMax] = useState("");
+
+  // parse operating hours like "09:00-17:00" and return normalized HH:MM
+  const parseOperatingHours = (operatingHours) => {
+    if (!operatingHours) return null;
+    const match = operatingHours.match(/(\d{1,2}:\d{2})\s*[-–]\s*(\d{1,2}:\d{2})/);
+    if (!match) return null;
+    const normalize = (t) => { 
+      const [h, m] = t.split(":");
+      return `${h.padStart(2, "0")}:${m}`;
+    };
+    try {
+      const open = normalize(match[1]);
+      const close = normalize(match[2]);
+      return { open, close };
+    } catch (e) {
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    if (!time) {
+      setIsTimeValid(false);
+      return;
+    }
+    // If no parsed range available, consider time valid
+    if (!timeMin || !timeMax) {
+      setIsTimeValid(true);
+      return;
+    }
+    setIsTimeValid(time >= timeMin && time <= timeMax);
+  }, [time, timeMin, timeMax]);
   
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -44,6 +80,17 @@ export default function DashboardUser() {
     setMessage("");
     setDate("");
     setTime("");
+    // derive min/max time from business operatingHours when opening modal
+    const parsed = parseOperatingHours(business?.operatingHours);
+    if (parsed) {
+      setTimeMin(parsed.open);
+      setTimeMax(parsed.close);
+      setIsTimeValid(false);
+    } else {
+      setTimeMin("");
+      setTimeMax("");
+      setIsTimeValid(false);
+    }
   };
 
   const closeBookingModal = () => {
@@ -57,6 +104,12 @@ export default function DashboardUser() {
     
     setLoading(true);
     setMessage("");
+    // Validate time against business hours if range is available
+    if (timeMin && timeMax && !(time >= timeMin && time <= timeMax)) {
+      setMessage("Selected time is outside business hours");
+      setLoading(false);
+      return;
+    }
     
     try {
       const payload = {
@@ -221,13 +274,18 @@ export default function DashboardUser() {
                   className="form-input"
                   value={time} 
                   onChange={(e) => setTime(e.target.value)} 
+                  min={timeMin || undefined}
+                  max={timeMax || undefined}
                   required 
                 />
+                {time && timeMin && timeMax && !isTimeValid && (
+                  <div className="auth-error">Selected time is outside business hours ({timeMin} - {timeMax})</div>
+                )}
               </div>
               
               <button 
                 type="submit" 
-                disabled={loading}
+                disabled={loading || (timeMin && timeMax ? !isTimeValid : false)}
                 className="btn-modern btn-primary full-width-btn"
               >
                 {loading ? "Booking..." : "Confirm Booking"}
