@@ -24,7 +24,7 @@ export default function DashboardUser() {
   // parse operating hours like "09:00-17:00" and return normalized HH:MM
   const parseOperatingHours = (operatingHours) => {
     if (!operatingHours) return null;
-    const match = operatingHours.match(/(\d{1,2}:\d{2})\s*[-–]\s*(\d{1,2}:\d{2})/);
+    const match = operatingHours.match(/(\d{1,2}:\d{2})\s*[--]\s*(\d{1,2}:\d{2})/);
     if (!match) return null;
     const normalize = (t) => { 
       const [h, m] = t.split(":");
@@ -34,7 +34,7 @@ export default function DashboardUser() {
       const open = normalize(match[1]);
       const close = normalize(match[2]);
       return { open, close };
-    } catch (e) {
+    } catch {
       return null;
     }
   };
@@ -292,7 +292,7 @@ export default function DashboardUser() {
               </button>
               
               {message === "success" ? (
-                 <div className="auth-error success-message-box">
+                 <div className="auth-success success-message-box">
                    booking confirmed!
                  </div>
               ) : message && (
