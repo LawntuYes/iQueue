@@ -1,3 +1,4 @@
 Backend/.env
 Frontend/assets/todo.txt
 Frontend/src_backup_*
+.vscode/launch.json

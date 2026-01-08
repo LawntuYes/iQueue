@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from "../../hooks/useAuth";
 
 const Login = () => {
   const { login } = useAuth();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -18,42 +18,42 @@ const Login = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
-    setError(''); // נקה שגיאות כשהמשתמש מתחיל להקליד
+    setError(""); // נקה שגיאות כשהמשתמש מתחיל להקליד
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Basic validation
     if (!formData.email || !formData.password) {
-      setError('Please fill in all fields');
+      setError("Please fill in all fields");
       return;
     }
 
     if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters');
+      setError("Password must be at least 8 characters");
       return;
     }
 
     // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-      setError('Please enter a valid email address');
+      setError("Please enter a valid email address");
       return;
     }
 
     setIsLoading(true);
-    setError('');
+    setError("");
 
     try {
-      console.log('Login attempt:', formData.email);
-      
+      console.log("Login attempt:", formData.email);
+
       await login(formData.email, formData.password);
       // Navigate to home but user (with role) is stored in AuthProvider/localStorage
-      navigate('/');
+      navigate("/");
     } catch (err) {
       console.error("Login failed:", err);
-      setError(err.message || 'Login failed. Please check your credentials.');
+      setError(err.message || "Login failed. Please check your credentials.");
     } finally {
       setIsLoading(false);
     }
@@ -124,25 +124,21 @@ const Login = () => {
           </div>
 
           {/* כפתור התחברות */}
-          <button
-            type="submit"
-            className="auth-btn"
-            disabled={isLoading}
-          >
+          <button type="submit" className="auth-btn" disabled={isLoading}>
             {isLoading ? (
               <>
                 <span className="spinner"></span>
                 Signing in...
               </>
             ) : (
-              'Sign In'
+              "Sign In"
             )}
           </button>
 
           {/* כפתור לרישום */}
           <div className="auth-footer">
             <p className="auth-text">
-              Don't have an account?{' '}
+              Don't have an account?{" "}
               <Link to="/register" className="auth-link">
                 Sign up here
               </Link>

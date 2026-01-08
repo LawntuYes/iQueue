@@ -24,11 +24,7 @@ export const createBusiness = async (req, res) => {
 
     await newBusiness.save();
 
-    res.status(201).json({
-      success: true,
-      message: "Business created successfully",
-      business: newBusiness,
-    });
+    res.status(201).json({success: true, message: "Business created successfully", business: newBusiness});
   } catch (error) {
     console.error("Create Business Error:", error);
     res

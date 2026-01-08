@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
-import '../../assets/styles/home.css';
+import { Link } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import "../../assets/styles/home.css";
 
 export default function Home() {
   const { user } = useAuth();
@@ -17,7 +17,7 @@ export default function Home() {
           <br />
           Simply Better.
         </h1>
-        
+
         <p className="hero-subtitle">
           The modern way to manage your time and appointments.
           <br />
@@ -34,12 +34,14 @@ export default function Home() {
             </Link>
           </div>
         )}
-        
+
         {user && (
           <div className="hero-buttons">
-             <span style={{ color: '#6b7280', fontSize: '1.1rem', fontWeight: 500 }}>
-               Welcome, {user.name}
-             </span>
+            <span
+              style={{ color: "#6b7280", fontSize: "1.1rem", fontWeight: 500 }}
+            >
+              Welcome, {user.name}
+            </span>
           </div>
         )}
       </div>

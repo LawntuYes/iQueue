@@ -9,8 +9,7 @@ export const verifyToken = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || "default_secret_key"
+      token, process.env.JWT_SECRET || "default_secret_key"
     );
     req.userId = decoded.userId;
     next();
