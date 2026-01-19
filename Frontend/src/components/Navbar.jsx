@@ -6,7 +6,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
+
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -36,7 +36,7 @@ const Navbar = () => {
             <Link to="/" className="nav-item" onClick={() => setIsMenuOpen(false)}>
               Home
             </Link>
-            
+
             {role === 'admin' && (
               <>
                 <Link to="/dashboard/admin" className="nav-item" onClick={() => setIsMenuOpen(false)}>
@@ -49,9 +49,11 @@ const Navbar = () => {
             )}
 
             {role === 'business' && (
-              <Link to="/dashboard/business" className="nav-item" onClick={() => setIsMenuOpen(false)}>
+              <><Link to="/dashboard/business" className="nav-item" onClick={() => setIsMenuOpen(false)}>
                 Business Dashboard
-              </Link>
+              </Link><Link to="/dashboard/queues" className="nav-item" onClick={() => setIsMenuOpen(false)}>
+                  Queues
+                </Link></>
             )}
 
             {role === 'user' && (
