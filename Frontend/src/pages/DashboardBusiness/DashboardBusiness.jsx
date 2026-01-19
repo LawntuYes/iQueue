@@ -227,15 +227,14 @@ export default function DashboardBusiness() {
                       </div>
 
                       <div className="queue-actions">
-                        <button 
+                        <button
                           className="btn-modern btn-outline btn-complete"
                           onClick={() => handleDelete(appt._id)}
                         >
                           Complete
                         </button>
-                        <button 
+                        <button
                           className="btn-modern btn-outline btn-deny"
-                          style={{ borderColor: '#ef4444', color: '#ef4444', marginLeft: '0.5rem' }}
                           onClick={() => handleDelete(appt._id)}
                         >
                           Deny

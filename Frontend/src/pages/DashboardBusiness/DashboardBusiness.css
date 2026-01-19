@@ -7,7 +7,7 @@
 }
 
 .dashboard-business-card {
-  max-width: 800px;
+  max-width: 800px !important;
   width: 100%;
   margin-top: 2rem;
 }
@@ -139,7 +139,24 @@
   gap: 0.5rem;
 }
 
+.btn-outline{
+  padding: 10px;
+  width: 100px;
+  cursor: pointer;
+}
+
 .btn-complete {
   padding: 0.5rem 1rem;
   font-size: 0.85rem;
+}
+
+.btn-deny{
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  border: 2px solid #ef4444;
+  color: #ef4444;
+}
+
+.btn-deny:hover{
+  background-color: #fff2f2;
 }
