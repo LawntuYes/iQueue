@@ -1,9 +1,41 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createAppointment, getMyAppointments } from "../../services/appointments";
 import { getAllBusinesses } from "../../services/business";
 import { useAuth } from "../../hooks/useAuth";
 import "../../assets/styles/home.css";
 import "./DashboardUser.css";
+
+// --- Static Helper Functions ---
+
+// Parse operating hours like "09:00-17:00" and return normalized HH:MM
+const parseOperatingHours = (operatingHours) => {
+  if (!operatingHours) return null;
+  const match = operatingHours.match(/(\d{1,2}:\d{2})\s*[--]\s*(\d{1,2}:\d{2})/);
+  if (!match) return null;
+  
+  const normalize = (t) => { 
+    const [h, m] = t.split(":");
+    return `${h.padStart(2, "0")}:${m}`;
+  };
+  
+  try {
+    const open = normalize(match[1]);
+    const close = normalize(match[2]);
+    return { open, close };
+  } catch {
+    return null;
+  }
+};
+
+// Helper to get category color
+const getCategoryColor = (cat) => {
+  switch(cat) {
+    case 'Barber Shop': return { bg: '#e0e7ff', text: '#4338ca' }; // Indigo
+    case 'Restaurant': return { bg: '#fce7f3', text: '#be185d' }; // Pink
+    case 'Shows': return { bg: '#fae8ff', text: '#86198f' }; // Purple
+    default: return { bg: '#f3f4f6', text: '#374151' }; // Gray
+  }
+};
 
 export default function DashboardUser() {
   const { user } = useAuth();
@@ -15,51 +47,17 @@ export default function DashboardUser() {
   const [showModal, setShowModal] = useState(false);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
-  // check if the time is synching with the business open hours
+  // Time Validation State
   const [isTimeValid, setIsTimeValid] = useState(false);
   const [timeMin, setTimeMin] = useState("");
   const [timeMax, setTimeMax] = useState("");
 
-  // parse operating hours like "09:00-17:00" and return normalized HH:MM
-  const parseOperatingHours = (operatingHours) => {
-    if (!operatingHours) return null;
-    const match = operatingHours.match(/(\d{1,2}:\d{2})\s*[--]\s*(\d{1,2}:\d{2})/);
-    if (!match) return null;
-    const normalize = (t) => { 
-      const [h, m] = t.split(":");
-      return `${h.padStart(2, "0")}:${m}`;
-    };
-    try {
-      const open = normalize(match[1]);
-      const close = normalize(match[2]);
-      return { open, close };
-    } catch {
-      return null;
-    }
-  };
+  // --- Effects & Logic ---
 
-  useEffect(() => {
-    if (!time) {
-      setIsTimeValid(false);
-      return;
-    }
-    // If no parsed range available, consider time valid
-    if (!timeMin || !timeMax) {
-      setIsTimeValid(true);
-      return;
-    }
-    setIsTimeValid(time >= timeMin && time <= timeMax);
-  }, [time, timeMin, timeMax]);
-  
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [apptData, bizData] = await Promise.all([
         getMyAppointments(),
@@ -72,7 +70,25 @@ export default function DashboardUser() {
     } catch (error) {
       console.error("Failed to fetch data", error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // Validate time whenever inputs change
+  useEffect(() => {
+    if (!time) {
+      setIsTimeValid(false);
+      return;
+    }
+    // If no parsed range available, consider time valid
+    if (!timeMin || !timeMax) {
+      setIsTimeValid(true);
+      return;
+    }
+    setIsTimeValid(time >= timeMin && time <= timeMax);
+  }, [time, timeMin, timeMax]);
 
   const openBookingModal = (business) => {
     setSelectedBusiness(business);
@@ -80,17 +96,17 @@ export default function DashboardUser() {
     setMessage("");
     setDate("");
     setTime("");
-    // derive min/max time from business operatingHours when opening modal
+    
+    // Derive min/max time from business operatingHours
     const parsed = parseOperatingHours(business?.operatingHours);
     if (parsed) {
       setTimeMin(parsed.open);
       setTimeMax(parsed.close);
-      setIsTimeValid(false);
     } else {
       setTimeMin("");
       setTimeMax("");
-      setIsTimeValid(false);
     }
+    setIsTimeValid(false);
   };
 
   const closeBookingModal = () => {
@@ -102,14 +118,14 @@ export default function DashboardUser() {
     e.preventDefault();
     if (!selectedBusiness) return;
     
-    setLoading(true);
-    setMessage("");
-    // Validate time against business hours if range is available
-    if (timeMin && timeMax && !(time >= timeMin && time <= timeMax)) {
+    // Final validation check
+    if (timeMin && timeMax && !isTimeValid) {
       setMessage("Selected time is outside business hours");
-      setLoading(false);
       return;
     }
+    
+    setLoading(true);
+    setMessage("");
     
     try {
       const payload = {
@@ -120,33 +136,23 @@ export default function DashboardUser() {
       
       const data = await createAppointment(payload);
       if (data.success) {
-        setMessage("success"); // Flag for UI to show success state/close modal
+        setMessage("success"); 
         
         // Refresh appointments
-        const apptData = await getMyAppointments();
-        if (apptData.success) setAppointments(apptData.appointments);
+        await fetchData(); // Reuse the memoized fetch function
         
-        // Small delay before closing modal so user sees success
+        // Small delay before closing modal
         setTimeout(() => {
           closeBookingModal();
         }, 1500);
       } else {
          setMessage(data.message || "Failed to book");
       }
-    } catch {
+    } catch (err) {
+      console.error(err);
       setMessage("Failed to book appointment.");
     } finally {
       setLoading(false);
-    }
-  };
-
-  // Helper to get category color
-  const getCategoryColor = (cat) => {
-    switch(cat) {
-      case 'Barber Shop': return { bg: '#e0e7ff', text: '#4338ca' }; // Indigo
-      case 'Restaurant': return { bg: '#fce7f3', text: '#be185d' }; // Pink
-      case 'Shows': return { bg: '#fae8ff', text: '#86198f' }; // Purple
-      default: return { bg: '#f3f4f6', text: '#374151' }; // Gray
     }
   };
 

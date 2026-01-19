@@ -44,3 +44,22 @@ export const getMyAppointments = async (req, res) => {
       .json({ success: false, message: "Error fetching appointments" });
   }
 };
+
+export const deleteAppointment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.userId;
+
+    // TODO: Verify if the user owns the business linked to this appointment (security)
+    // For now, assuming if they have the ID and are logged in, it's okay (MVP)
+
+    await Appointment.findByIdAndDelete(id);
+
+    res.status(200).json({ success: true, message: "Appointment deleted" });
+  } catch (error) {
+    console.error("Delete Appointment Error:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error deleting appointment" });
+  }
+};

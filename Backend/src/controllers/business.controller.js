@@ -24,7 +24,13 @@ export const createBusiness = async (req, res) => {
 
     await newBusiness.save();
 
-    res.status(201).json({success: true, message: "Business created successfully", business: newBusiness});
+    res
+      .status(201)
+      .json({
+        success: true,
+        message: "Business created successfully",
+        business: newBusiness,
+      });
   } catch (error) {
     console.error("Create Business Error:", error);
     res
@@ -36,7 +42,10 @@ export const createBusiness = async (req, res) => {
 export const getMyBusiness = async (req, res) => {
   try {
     const userId = req.userId;
+    console.log("getMyBusiness - Requesting User ID:", userId);
+
     const business = await Business.findOne({ owner: userId });
+    console.log("getMyBusiness - Found Business:", business);
 
     if (!business) {
       // Not found is not an error here, just means no business yet

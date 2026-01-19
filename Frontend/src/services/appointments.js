@@ -17,3 +17,9 @@ export const createAppointment = async (dateOrObj, time) => {
 export const getMyAppointments = async () => {
   return request("/appointments/my-appointments");
 };
+
+export const deleteAppointment = async (id) => {
+  return request(`/appointments/${id}`, {
+    method: "DELETE",
+  });
+};

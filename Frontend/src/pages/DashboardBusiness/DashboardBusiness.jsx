@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   createBusiness,
   getMyBusiness,
   getBusinessAppointments,
 } from "../../services/business";
+import { deleteAppointment } from "../../services/appointments";
 import "../../assets/styles/home.css";
 import "./DashboardBusiness.css";
 
@@ -22,11 +23,8 @@ export default function DashboardBusiness() {
   });
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    fetchBusinessData();
-  }, []);
-
-  const fetchBusinessData = async () => {
+  // Define callback BEFORE useEffect to avoid ReferenceError in dependency array
+  const fetchBusinessData = useCallback(async () => {
     try {
       const bizData = await getMyBusiness();
       if (bizData.success && bizData.business) {
@@ -42,7 +40,11 @@ export default function DashboardBusiness() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchBusinessData();
+  }, [fetchBusinessData]);
 
   const handleCreateBusiness = async (e) => {
     e.preventDefault();
@@ -66,6 +68,20 @@ export default function DashboardBusiness() {
       setMessage("Error creating business");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm("Are you sure you want to remove this appointment?")) return;
+    try {
+      const data = await deleteAppointment(id);
+      if (data.success) {
+        setAppointments((prev) => prev.filter((appt) => appt._id !== id));
+      } else {
+        alert("Failed to delete appointment");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
     }
   };
 
@@ -211,8 +227,18 @@ export default function DashboardBusiness() {
                       </div>
 
                       <div className="queue-actions">
-                        <button className="btn-modern btn-outline btn-complete">
+                        <button 
+                          className="btn-modern btn-outline btn-complete"
+                          onClick={() => handleDelete(appt._id)}
+                        >
                           Complete
+                        </button>
+                        <button 
+                          className="btn-modern btn-outline btn-deny"
+                          style={{ borderColor: '#ef4444', color: '#ef4444', marginLeft: '0.5rem' }}
+                          onClick={() => handleDelete(appt._id)}
+                        >
+                          Deny
                         </button>
                       </div>
                     </div>
