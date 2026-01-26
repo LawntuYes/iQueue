@@ -33,8 +33,10 @@ export const getMyAppointments = async (req, res) => {
   try {
     const userId = req.userId;
     const appointments = await Appointment.find({ user: userId })
-      .populate("business", "name")
-      .sort({ createdAt: -1 });
+      .populate("business", "name") // Populate business reference with name field
+      .sort({
+        createdAt: -1, // Sort by creation date descending (newest first)
+      });
 
     res.status(200).json({ success: true, appointments });
   } catch (error) {
