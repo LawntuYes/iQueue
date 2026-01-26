@@ -33,7 +33,7 @@ export const getMyAppointments = async (req, res) => {
     const appointments = await Appointment.find({ user: userId })
       .populate("business", "name")
       .sort({
-        createdAt: -1,
+        createdAt: -1, // צריך -1 כדי למיין מהחדש לישן
       });
 
     res.status(200).json({ success: true, appointments });
