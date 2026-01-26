@@ -119,6 +119,14 @@ body {
   color: var(--primary-color);
 }
 
+.nav-item.active {
+  color: var(--primary-color);
+}
+
+.nav-item.active::after {
+  width: 100%;
+}
+
 .nav-item::after {
   content: "";
   position: absolute;
@@ -191,6 +199,12 @@ body {
 
 .btn-login:hover {
   background: var(--background-light);
+  border-color: var(--primary-color);
+}
+
+.btn-login.active {
+  color: white;
+  background: var(--primary-color);
   border-color: var(--primary-color);
 }
 
