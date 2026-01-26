@@ -1,20 +1,30 @@
-import { useState } from "react";
-import { login as loginService, register as registerService, logout as logoutService } from "../services/auth";
+import { useState, useEffect } from "react";
+import { login as loginService, register as registerService, logout as logoutService, getCurrentUser } from "../services/auth";
 import AuthContext from "./AuthContext";
 
-const STORAGE_KEY = "iq_user";
+
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
-    try {
-      const raw = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
-      return raw ? JSON.parse(raw) : null;
-    } catch (err) {
-      return err;
-    }
-  });
-  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // Start loading true to wait for check
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const data = await getCurrentUser();
+        if (data.success && data.user) {
+          setUser(data.user);
+        }
+      } catch (err) {
+        // If 401/403, just means not logged in, silent fail is fine or handle specific error
+        console.log("No active session", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkSession();
+  }, []);
 
   const login = async (email, password) => {
     setLoading(true);
@@ -23,7 +33,7 @@ export const AuthProvider = ({ children }) => {
       const data = await loginService(email, password);
       // Assuming backend returns { user: ... }
       setUser(data.user);
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user)); } catch (e) { setError("LocalStorage error", e); }
+
       return data;
     } catch (err) {
       setError(err.message || "Login failed");
@@ -39,7 +49,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await registerService(name, email, password, userType);
       setUser(data.user);
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user)); } catch (e) { setError("LocalStorage error", e); }
+
       return data;
     } catch (err) {
       setError(err.message || "Registration failed");
@@ -53,7 +63,7 @@ export const AuthProvider = ({ children }) => {
     try {
         await logoutService();
         setUser(null);
-        try { localStorage.removeItem(STORAGE_KEY); } catch (e) { setError("LocalStorage error", e); }
+
     } catch (err) {
         console.error("Logout failed", err);
     }

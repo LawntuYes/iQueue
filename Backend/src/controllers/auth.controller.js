@@ -26,7 +26,7 @@ export const register = async (req, res) => {
   try {
     const { name, email, password, userType } = validate(
       RegisterSchema,
-      req.body
+      req.body,
     ); //Zod validation
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -40,7 +40,7 @@ export const register = async (req, res) => {
     const token = jwt.sign(
       { userId: newUser._id },
       process.env.JWT_SECRET || "default_secret_key",
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     res.cookie("jwt", token, {
@@ -60,14 +60,12 @@ export const register = async (req, res) => {
       return res.status(400).json(error);
     }
     console.error("Registration Error:", error);
-    return res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal Server Error",
-        error: error.message,
-        stack: error.stack,
-      });
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+      stack: error.stack,
+    });
   }
 };
 
@@ -93,7 +91,7 @@ export const login = async (req, res) => {
     const token = jwt.sign(
       { userId: user._id },
       process.env.JWT_SECRET || "default_secret_key",
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     res.cookie("jwt", token, {
@@ -104,10 +102,10 @@ export const login = async (req, res) => {
     });
 
     // 3. Success: Return 200 OK. (The user.model.js toJSON hides the hash and adds role)
-    return res.status(200).json({ 
+    return res.status(200).json({
       success: true,
-      user, 
-      message: "Login successful." 
+      user,
+      message: "Login successful.",
     });
   } catch (error) {
     if (error.status === 400) {
@@ -127,9 +125,26 @@ export const logout = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
     });
-    return res.status(200).json({ success: true, message: "Logout successful." });
+    return res
+      .status(200)
+      .json({ success: true, message: "Logout successful." });
   } catch (error) {
     console.error("Logout Error:", error);
     return res.status(500).json({ message: "Error logging out." });
   }
-}
+};
+
+export const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+    return res.status(200).json({ success: true, user });
+  } catch (error) {
+    console.error("GetMe Error:", error);
+    return res.status(500).json({ message: "Error fetching user." });
+  }
+};
