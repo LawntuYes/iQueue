@@ -5,6 +5,8 @@ import {
   getBusinessAppointments,
 } from "../../services/business";
 import { deleteAppointment } from "../../services/appointments";
+import ConfirmModal from "../../components/ConfirmModal";
+
 import "../../assets/styles/home.css";
 import "./DashboardBusiness.css";
 
@@ -13,7 +15,11 @@ export default function DashboardBusiness() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Form State
+  // 🔹 Modal state
+  const [modalType, setModalType] = useState(null); // "complete" | "delete" | null
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
+
+  // 🔹 Form State
   const [formData, setFormData] = useState({
     name: "",
     category: "Barber Shop",
@@ -23,13 +29,13 @@ export default function DashboardBusiness() {
   });
   const [message, setMessage] = useState("");
 
-  // Define callback BEFORE useEffect to avoid ReferenceError in dependency array
+  // 🔹 Fetch business + appointments
   const fetchBusinessData = useCallback(async () => {
     try {
       const bizData = await getMyBusiness();
       if (bizData.success && bizData.business) {
         setBusiness(bizData.business);
-        // If business exists, fetch appointments
+
         const apptData = await getBusinessAppointments();
         if (apptData.success) {
           setAppointments(apptData.appointments);
@@ -46,9 +52,11 @@ export default function DashboardBusiness() {
     fetchBusinessData();
   }, [fetchBusinessData]);
 
+  // 🔹 Create business
   const handleCreateBusiness = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       const payload = {
         name: formData.name,
@@ -71,18 +79,38 @@ export default function DashboardBusiness() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to remove this appointment?")) return;
-    try {
-      const data = await deleteAppointment(id);
-      if (data.success) {
-        setAppointments((prev) => prev.filter((appt) => appt._id !== id));
-      } else {
-        alert("Failed to delete appointment");
+  // 🔹 Modal helpers
+  const openModal = (type, id) => {
+    setModalType(type);
+    setSelectedAppointmentId(id);
+  };
+
+  const closeModal = () => {
+    setModalType(null);
+    setSelectedAppointmentId(null);
+  };
+
+  // 🔹 Confirm action
+  const handleConfirm = async () => {
+    if (modalType === "delete") {
+      try {
+        const data = await deleteAppointment(selectedAppointmentId);
+        if (data.success) {
+          setAppointments((prev) =>
+            prev.filter((appt) => appt._id !== selectedAppointmentId)
+          );
+        }
+      } catch (error) {
+        console.error("Delete error:", error);
       }
-    } catch (error) {
-      console.error("Delete error:", error);
     }
+
+    if (modalType === "complete") {
+      // TODO: completeAppointment(selectedAppointmentId)
+      console.log("Complete appointment:", selectedAppointmentId);
+    }
+
+    closeModal();
   };
 
   if (loading) return <div className="loading-container">Loading...</div>;
@@ -91,93 +119,51 @@ export default function DashboardBusiness() {
     <div className="home-container dashboard-business-wrapper">
       <div className="auth-card dashboard-business-card">
         {!business ? (
-          // CREATE BUSINESS FORM
+          /* ================= CREATE BUSINESS ================= */
           <>
             <h1 className="auth-title create-business-title">
               Create Business Profile
             </h1>
-            <p className="auth-subtitle create-business-subtitle">
-              Setup your business to start accepting queues.
-            </p>
 
             <form
               onSubmit={handleCreateBusiness}
               className="auth-form create-business-form"
             >
-              <div className="form-group">
-                <label className="form-label">Business Name</label>
-                <input
-                  type="text"
-                  required
-                  className="form-input"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Category</label>
-                <select
-                  className="form-input"
-                  value={formData.category}
-                  onChange={(e) =>
-                    setFormData({ ...formData, category: e.target.value })
-                  }
-                >
-                  <option value="Barber Shop">Barber Shop</option>
-                  <option value="Restaurant">Restaurant</option>
-                  <option value="Shows">Shows</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
+              <input
+                type="text"
+                placeholder="Business name"
+                required
+                className="form-input"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+              />
 
-              <div className="form-group">
-                <label className="form-label">Description</label>
-                <textarea
-                  className="form-input"
-                  rows="3"
-                  value={formData.description}
-                  onChange={(e) =>
-                    setFormData({ ...formData, description: e.target.value })
-                  }
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Operating Hours</label>
-                <div className="hours-container">
-                  <div className="hours-input-group">
-                    <label className="hours-label">Open</label>
-                    <input
-                      type="time"
-                      className="form-input"
-                      required
-                      value={formData.openTime || "09:00"}
-                      onChange={(e) =>
-                        setFormData({ ...formData, openTime: e.target.value })
-                      }
-                    />
-                  </div>
-                  <span className="hours-separator">to</span>
-                  <div className="hours-input-group">
-                    <label className="hours-label">Close</label>
-                    <input
-                      type="time"
-                      className="form-input"
-                      required
-                      value={formData.closeTime || "17:00"}
-                      onChange={(e) =>
-                        setFormData({ ...formData, closeTime: e.target.value })
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                className="btn-modern btn-primary submit-btn"
+              <select
+                className="form-input"
+                value={formData.category}
+                onChange={(e) =>
+                  setFormData({ ...formData, category: e.target.value })
+                }
               >
+                <option value="Barber Shop">Barber Shop</option>
+                <option value="Restaurant">Restaurant</option>
+                <option value="Shows">Shows</option>
+                <option value="Other">Other</option>
+              </select>
+
+              <textarea
+                className="form-input"
+                rows="3"
+                placeholder="Description"
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
+              />
+
+              <button type="submit" className="btn-modern btn-primary">
                 Create Business
               </button>
 
@@ -185,57 +171,36 @@ export default function DashboardBusiness() {
             </form>
           </>
         ) : (
-          // BUSINESS DASHBOARD VIEW
+          /* ================= DASHBOARD ================= */
           <>
-            <div className="business-header">
-              <div>
-                <h1 className="auth-title business-title">{business.name}</h1>
-                <span className="business-category-badge">
-                  {business.category}
-                </span>
-                <p className="auth-subtitle business-desc">
-                  {business.description}
-                </p>
-                <p className="auth-subtitle business-time">
-                  🕒 {business.operatingHours}
-                </p>
-              </div>
-              <div className="business-active-badge">Business Active</div>
-            </div>
-
-            <div className="auth-divider">
-              <span className="divider-text">Current Queue</span>
-            </div>
+            <h1 className="auth-title">{business.name}</h1>
 
             <div className="queue-list-container">
               {appointments.length === 0 ? (
-                <div className="empty-queue">
-                  <p>No active appointments in queue.</p>
-                </div>
+                <p>No active appointments.</p>
               ) : (
                 <div className="queue-grid">
                   {appointments.map((appt) => (
                     <div key={appt._id} className="queue-item">
                       <div>
-                        <div className="queue-user-name">
-                          {appt.user?.name || "Unknown User"}
-                        </div>
-                        <div className="queue-time-info">
+                        <strong>{appt.user?.name || "Unknown User"}</strong>
+                        <div>
                           {new Date(appt.date).toLocaleDateString()} at{" "}
-                          <strong>{appt.time}</strong>
+                          {appt.time}
                         </div>
                       </div>
 
                       <div className="queue-actions">
                         <button
                           className="btn-modern btn-outline btn-complete"
-                          onClick={() => handleDelete(appt._id)}
+                          onClick={() => openModal("complete", appt._id)}
                         >
                           Complete
                         </button>
+
                         <button
                           className="btn-modern btn-outline btn-deny"
-                          onClick={() => handleDelete(appt._id)}
+                          onClick={() => openModal("delete", appt._id)}
                         >
                           Deny
                         </button>
@@ -248,6 +213,23 @@ export default function DashboardBusiness() {
           </>
         )}
       </div>
+      <ConfirmModal
+        isOpen={modalType !== null}
+        title={
+          modalType === "complete"
+            ? "Complete Appointment"
+            : "Delete Appointment"
+        }
+        message={
+          modalType === "complete"
+            ? "Are you sure you want to complete this appointment?"
+            : "Are you sure you want to delete this appointment?"
+        }
+        confirmText={modalType === "complete" ? "Complete" : "Delete"}
+        onConfirm={handleConfirm}
+        onCancel={closeModal}
+        danger={modalType === "delete"}
+      />
     </div>
   );
 }
