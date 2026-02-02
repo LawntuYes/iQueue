@@ -218,14 +218,14 @@ export default function DashboardBusiness() {
         title={
           modalType === "complete"
             ? "Complete Appointment"
-            : "Delete Appointment"
+            : "Deny Appointment"
         }
         message={
           modalType === "complete"
             ? "Are you sure you want to complete this appointment?"
-            : "Are you sure you want to delete this appointment?"
+            : "Are you sure you want to deny this appointment?"
         }
-        confirmText={modalType === "complete" ? "Complete" : "Delete"}
+        confirmText={modalType === "complete" ? "Complete" : "Deny"}
         onConfirm={handleConfirm}
         onCancel={closeModal}
         danger={modalType === "delete"}
