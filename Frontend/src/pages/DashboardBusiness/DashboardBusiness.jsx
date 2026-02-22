@@ -4,7 +4,7 @@ import {
   getMyBusiness,
   getBusinessAppointments,
 } from "../../services/business";
-import { deleteAppointment } from "../../services/appointments";
+import { deleteAppointment, approveAppointment } from "../../services/appointments";
 import ConfirmModal from "../../components/ConfirmModal";
 
 import "../../assets/styles/home.css";
@@ -106,8 +106,20 @@ export default function DashboardBusiness() {
     }
 
     if (modalType === "complete") {
-      // TODO: completeAppointment(selectedAppointmentId)
-      console.log("Complete appointment:", selectedAppointmentId);
+      try {
+        const data = await approveAppointment(selectedAppointmentId);
+        if (data.success) {
+          setAppointments((prev) =>
+            prev.map((appt) =>
+              appt._id === selectedAppointmentId
+                ? { ...appt, status: "confirmed" }
+                : appt
+            )
+          );
+        }
+      } catch (error) {
+        console.error("Complete error:", error);
+      }
     }
 
     closeModal();
@@ -176,11 +188,11 @@ export default function DashboardBusiness() {
             <h1 className="auth-title">{business.name}</h1>
 
             <div className="queue-list-container">
-              {appointments.length === 0 ? (
+              {appointments.filter(appt => appt.status === "pending").length === 0 ? (
                 <p>No active appointments.</p>
               ) : (
                 <div className="queue-grid">
-                  {appointments.map((appt) => (
+                  {appointments.filter(appt => appt.status === "pending").map((appt) => (
                     <div key={appt._id} className="queue-item">
                       <div>
                         <strong>{appt.user?.name || "Unknown User"}</strong>

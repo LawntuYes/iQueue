@@ -3,6 +3,7 @@ import {
   createAppointment,
   getMyAppointments,
   deleteAppointment,
+  approveAppointment,
 } from "../controllers/appointment.controller.js";
 import { verifyToken } from "../middleware/auth.middleware.js";
 
@@ -13,6 +14,7 @@ router.use(verifyToken);
 // Appointment routes
 router.post("/", createAppointment);
 router.get("/my-appointments", getMyAppointments);
+router.patch("/:id/approve", approveAppointment);
 router.delete("/:id", deleteAppointment);
 
 export default router;

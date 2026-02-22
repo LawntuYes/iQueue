@@ -61,3 +61,28 @@ export const deleteAppointment = async (req, res) => {
       .json({ success: false, message: "Error deleting appointment" });
   }
 };
+
+/** Approve an appointment (change status to confirmed). */
+export const approveAppointment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const appointment = await Appointment.findByIdAndUpdate(
+      id,
+      { status: "confirmed" },
+      { new: true }
+    );
+
+    if (!appointment) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Appointment not found" });
+    }
+
+    res.status(200).json({ success: true, message: "Appointment approved", appointment });
+  } catch (error) {
+    console.error("Approve Appointment Error:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error approving appointment" });
+  }
+};
