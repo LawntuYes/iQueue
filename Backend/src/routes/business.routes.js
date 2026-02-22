@@ -4,6 +4,8 @@ import {
   getMyBusiness,
   getBusinessAppointments,
   getAllBusinesses,
+  updateBusinessDescription,
+  deleteBusiness,
 } from "../controllers/business.controller.js";
 import { verifyToken } from "../middleware/auth.middleware.js";
 
@@ -16,5 +18,8 @@ router.get("/", getAllBusinesses);
 router.post("/", createBusiness);
 router.get("/mybusiness", getMyBusiness);
 router.get("/appointments", getBusinessAppointments);
+
+router.patch("/:id/description", updateBusinessDescription);
+router.delete("/:id", deleteBusiness);
 
 export default router;

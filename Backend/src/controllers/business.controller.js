@@ -87,12 +87,65 @@ export const getAllBusinesses = async (req, res) => {
     const businesses = await Business.find(
       {},
       "name description category operatingHours owner",
-    );
+    ).populate("owner", "name email");
     res.status(200).json({ success: true, businesses });
   } catch (error) {
     console.error("Get All Businesses Error:", error);
     res
       .status(500)
       .json({ success: false, message: "Error fetching businesses" });
+  }
+};
+
+/** Update the description of a business. */
+export const updateBusinessDescription = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { description } = req.body;
+
+    const business = await Business.findByIdAndUpdate(
+      id,
+      { description },
+      { new: true },
+    ).populate("owner", "name email");
+
+    if (!business) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Business not found" });
+    }
+
+    res
+      .status(200)
+      .json({ success: true, message: "Description updated", business });
+  } catch (error) {
+    console.error("Update Business Error:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error updating business description" });
+  }
+};
+
+/** Delete a business. */
+export const deleteBusiness = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const business = await Business.findByIdAndDelete(id);
+
+    if (!business) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Business not found" });
+    }
+
+    // Optional: Also delete all appointments associated with this business
+    await Appointment.deleteMany({ business: id });
+
+    res.status(200).json({ success: true, message: "Business deleted" });
+  } catch (error) {
+    console.error("Delete Business Error:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error deleting business" });
   }
 };

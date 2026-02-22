@@ -11,6 +11,7 @@ import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import BusinessPage from "../pages/BusinessPage/BusinessPage";
 import DashboardAdmin from "../pages/DashboardAdmin/DashboardAdmin";
+import AdminBusinesses from "../pages/AdminBusinesses/AdminBusinesses";
 import DashboardBusiness from "../pages/DashboardBusiness/DashboardBusiness";
 import DashboardUser from "../pages/DashboardUser/DashboardUser";
 import NotFound from "../pages/NotFound/NotFound";
@@ -33,6 +34,7 @@ export default function AppRouter() {
             <Route element={<PrivateRoute />}>
                 <Route element={<DashboardLayout />}>
                     <Route path="/dashboard/admin" element={<DashboardAdmin />} />
+                    <Route path="/admin/businesses" element={<AdminBusinesses />} />
                     <Route path="/dashboard/business" element={<DashboardBusiness />} />
                     <Route path="/dashboard/queues" element={<BusinessPage />}/>
                     <Route path="/user/dashboard" element={<DashboardUser />} />
