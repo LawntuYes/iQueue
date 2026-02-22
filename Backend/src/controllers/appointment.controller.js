@@ -61,3 +61,22 @@ export const deleteAppointment = async (req, res) => {
       .json({ success: false, message: "Error deleting appointment" });
   }
 };
+
+/** Get appointments for a specific user (Admin use). */
+export const getUserAppointments = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const appointments = await Appointment.find({ user: id })
+      .populate("business", "name")
+      .sort({
+        createdAt: -1,
+      });
+
+    res.status(200).json({ success: true, appointments });
+  } catch (error) {
+    console.error("Get User Appointments Error:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error fetching user appointments" });
+  }
+};
