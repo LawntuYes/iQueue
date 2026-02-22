@@ -23,3 +23,9 @@ export const deleteAppointment = async (id) => {
     method: "DELETE",
   });
 };
+
+export const approveAppointment = async (id) => {
+  return request(`/appointments/${id}/approve`, {
+    method: "PATCH",
+  });
+};

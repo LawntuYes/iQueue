@@ -62,6 +62,7 @@ export const deleteAppointment = async (req, res) => {
   }
 };
 
+<<<<<<< HEAD
 /** Get appointments for a specific user (Admin use). */
 export const getUserAppointments = async (req, res) => {
   try {
@@ -78,5 +79,29 @@ export const getUserAppointments = async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: "Error fetching user appointments" });
+=======
+/** Approve an appointment (change status to confirmed). */
+export const approveAppointment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const appointment = await Appointment.findByIdAndUpdate(
+      id,
+      { status: "confirmed" },
+      { new: true }
+    );
+
+    if (!appointment) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Appointment not found" });
+    }
+
+    res.status(200).json({ success: true, message: "Appointment approved", appointment });
+  } catch (error) {
+    console.error("Approve Appointment Error:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error approving appointment" });
+>>>>>>> cd8a7524fdfe94ed22813ea6af61d319c2a74049
   }
 };
