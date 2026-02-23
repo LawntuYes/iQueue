@@ -106,9 +106,6 @@ const Login = () => {
               <label htmlFor="password" className="form-label">
                 Password
               </label>
-              <Link to="/forgot-password" className="forgot-link">
-                Forgot password?
-              </Link>
             </div>
             <input
               type="password"
