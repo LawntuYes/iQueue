@@ -114,20 +114,14 @@ export default function AdminBusinesses() {
       <h2>Businesses</h2>
       <div className="admin-businesses-grid">
         {businesses.map((business) => (
-          <div 
-            key={business._id} 
-            className="admin-business-card clickable-card"
-            onClick={() => handleOpenModal(business)}
-          >
+          <div key={business._id} className="admin-business-card clickable-card" onClick={() => handleOpenModal(business)}>
             <div className="admin-business-header">
               <div className="admin-business-avatar">
                 {business.name ? business.name.charAt(0).toUpperCase() : '?'}
               </div>
               <div className="admin-business-info">
                 <h3>{business.name}</h3>
-                <span className="admin-user-role role-business">
-                  {business.category || 'Business'}
-                </span>
+                <span className="admin-user-role role-business">{business.category || 'Business'}</span>
               </div>
             </div>
             <div className="admin-business-body">
@@ -159,9 +153,7 @@ export default function AdminBusinesses() {
               </div>
               <div className="admin-modal-title">
                 <h2>{selectedBusiness.name}</h2>
-                <span className="admin-user-role role-business">
-                  {selectedBusiness.category || 'Business'}
-                </span>
+                <span className="admin-user-role role-business">{selectedBusiness.category || 'Business'}</span>
               </div>
             </div>
             <div className="admin-modal-body">
