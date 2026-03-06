@@ -1,7 +1,9 @@
 # iQueue 📋
 
 **A powerful web application for managing queues efficiently.**
+### Note that this project is not deployed yet, and it was built for a college assignment.
 
+### ⚠️ Warning: This project is not secure and should not be used in production. And this project used help from AI so there might be some bugs.
 ---
 
 ## 🚀 Overview
